@@ -1,4 +1,3 @@
 interface Vendible {
-        void preciodeVenta(int cantidad);
-    }
-
+    double calcularPrecioVenta(int cantidad);
+}

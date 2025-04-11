@@ -2,92 +2,124 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-
         Scanner scanner = new Scanner(System.in);
+        List<Producto> inventario = new ArrayList<>();
+        List<Cliente> clientes = new ArrayList<>();
+        boolean estado = true;
 
-        Producto Laptop = new Laptop();
-        Producto Celular = new Celular();
-
-        RegistroProducto vendible = new RegistroProducto();
-
-        Cliente clientes = new Cliente();
-
-
-        int op;
-        do {
+        while (estado) {
             System.out.println("""
-                    |====================================|
-                    |      GESTIÓN DE INV. Y VENTAS      |
-                    |====================================|
-                    | 1. VER INVENTARIO DE PRODUCTOS     |
-                    | 2. CREAR CLIENTE                   |
-                    | 3. REGISTRAR PRODUCTO              |
-                    | 4. COMPRAR PRODUCTO                |
-                    |====================================|
-                    | 5. SALIR DEL PROGRAMA              |
-                    |====================================|
-                    
-                    Seleccione una Opción: 
-                    """);
-            op = scanner.nextInt();
+
+|=======================================|
+|        GESTIÓN INV. Y VENTA           |
+|=======================================|
+|  [1] Agregar producto                 |
+|  [2] Ver inventario                   |
+|  [3] Crear cliente                    |
+|  [4] Comprar producto                 |
+|  [5] Ver compras de clientes          |
+|  [6] Salir                            |
+|=======================================|
+  ->  Elija una opción:      
+""");
+
+
+            int op = scanner.nextInt();
             scanner.nextLine();
 
             switch (op) {
                 case 1 -> {
-                    Laptop.mostrarDetalles();
-                    Celular.mostrarDetalles();
-                }
-                case 2 -> {
-                    System.out.println("Ingrese el nombre del cliente: ");
-                    String nombreCliente = scanner.nextLine();
-                    System.out.println("Ingrese el correo del cliente: ");
-                    String correo = scanner.nextLine();
-                    clientes.add(new Cliente(nombreCliente, correo));
-                }
-                case 3 -> {
-                    int op1;
-                    System.out.println("1. Registrar celular.");
-                    System.out.println("2. Registrar laptop.");
-                    op1 = scanner.nextInt();
+                    System.out.println("");
+                    System.out.println("1. Laptop");
+                    System.out.println("2. Celular");
+                    int tipo = scanner.nextInt();
                     scanner.nextLine();
-                    switch (op1){
+
+                    System.out.print("Nombre: ");
+                    String nombre = scanner.nextLine();
+                    System.out.print("Marca: ");
+                    String marca = scanner.nextLine();
+                    System.out.print("Precio: ");
+                    double precio = scanner.nextDouble();
+                    System.out.print("Stock: ");
+                    int stock = scanner.nextInt();
+                    scanner.nextLine();
+
+                    switch (tipo) {
                         case 1 -> {
-                            System.out.println("Ingrese el nombre del producto: ");
-                            String nombre = scanner.nextLine();
-                            System.out.println("Ingrese el precio del producto: ");
-                            double precio = scanner.nextDouble();
-                            System.out.println("Ingrese la cantidad del producto: ");
-                            int cantidad = scanner.nextInt();
-                            System.out.println("Ingrese la memoria del producto: ");
-                            int memoriaRam = scanner.nextInt();
-                            System.out.println("Ingrese el procesador del producto: ");
+                            System.out.print("Procesador: ");
                             String procesador = scanner.nextLine();
-
-                            Laptop.add(new Laptop(nombre,precio,cantidad,memoriaRam,procesador));
-                        }
-                        case 2 -> {
-                            System.out.println("Ingrese el nombre del producto: ");
-                            String nombre = scanner.nextLine();
-                            System.out.println("Ingrese el precio del producto: ");
-                            double precio = scanner.nextDouble();
-                            System.out.println("Ingrese la cantidad del producto: ");
-                            int cantidad = scanner.nextInt();
-                            System.out.println("Ingrese la cantidad de Bateria: ");
-                            int capacidadBateria = scanner.nextInt();
-                            System.out.println("Ingrese la resolución de camara: ");
-                            String camaraResolucion = scanner.nextLine();
-
-                            Laptop.add(new Laptop(nombre,precio,cantidad,capacidadBateria,camaraResolucion));
+                            System.out.print("Memoria RAM: ");
+                            int ram = scanner.nextInt();
+                            scanner.nextLine();
+                            inventario.add(new Laptop(nombre, marca, precio, stock, procesador, ram));
+                        }case 2 -> {
+                            System.out.print("Bateria: ");
+                            int bateria = scanner.nextInt();
+                            scanner.nextLine();
+                            System.out.print("Resolución de la camara: ");
+                            String camara = scanner.nextLine();
+                            inventario.add(new Celular(nombre, marca, precio, stock, bateria, camara));
+                        }default -> {
+                            System.out.println("Opcion invalida");
                         }
                     }
+                }case 2 -> {
+                    for (int i = 0; i < inventario.size(); i++) {
+                        inventario.get(i).mostrarDetalles();
+                        System.out.println();
+                    }
+                }case 3 -> {
+                    System.out.print("Nombre del cliente: ");
+                    String nombreClienteNuevo = scanner.nextLine();
+                    System.out.print("Correo del cliente: ");
+                    String correo = scanner.nextLine();
+                    clientes.add(new Cliente(nombreClienteNuevo, correo));
+                }case 4 -> {
+                    System.out.print("Nombre del cliente: ");
+                    String nombreCliente = scanner.nextLine();
+                    Cliente cliente = null;
+                    for (int i = 0; i < clientes.size(); i++) {
+                        Cliente c = clientes.get(i);
+                        if (c.getNombre().equalsIgnoreCase(nombreCliente)) {
+                            cliente = c;
+                            break;
+                        }
+                    }
+                    if (cliente == null) {
+                        System.out.println("Cliente no encontrado");
+                        break;
+                    }
 
-                } case 4 -> {
-                    System.out.println("COMPRA DE PRODUCTOS");
-                    System.out.println("Digite el nombre del producto: ");
-                    String nombre = scanner.nextLine();
-                }
+                    System.out.print("Nombre del producto: ");
+                    String nombreProd = scanner.nextLine();
+                    Producto producto = null;
+                    for (int i = 0; i < inventario.size(); i++) {
+                        Producto p = inventario.get(i);
+                        if (p.getNombre().equalsIgnoreCase(nombreProd)) {
+                            producto = p;
+                            break;
+                        }
+                    }
+                    if (producto == null) {
+                        System.out.println("Producto no encontrado.");
+                        break;
+                    }
+
+                    System.out.print("Cantidad a comprar: ");
+                    int cantidad = scanner.nextInt();
+                    scanner.nextLine();
+                    cliente.comprarProducto(producto, cantidad);
+                }case 5 -> {
+                    for (int i = 0; i < clientes.size(); i++) {
+                        Cliente c = clientes.get(i);
+                        c.mostrarCompra();
+                    }
+                }case 6 -> {
+                    estado = false;
+                    System.out.println("Programa finalizado...");
+                }default -> System.out.println("Opcion no válida.");
             }
-        } while (op != 5);
-        scanner.close();
+        }
     }
 }

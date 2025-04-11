@@ -1,21 +1,23 @@
-public class Cliente {
-    protected String nombreCliente;
-    protected String correo;
+import java.util.*;
 
-    public Cliente() {
-    }
+class Cliente {
+    private String nombre;
+    private String correo;
+    private List<Producto> productosComprados = new ArrayList<>();
+    private List<Double> costosTotales = new ArrayList<>();
 
-    public Cliente(String nombreCliente, String correo) {
-        this.nombreCliente = nombreCliente;
+    public Cliente(String nombre, String correo) {
+        this.nombre = nombre;
         this.correo = correo;
     }
 
     public String getNombre() {
-        return nombreCliente;
+
+        return nombre;
     }
 
     public void setNombre(String nombre) {
-        this.nombreCliente = nombreCliente;
+        this.nombre = nombre;
     }
 
     public String getCorreo() {
@@ -26,25 +28,45 @@ public class Cliente {
         this.correo = correo;
     }
 
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "nombreCliente='" + nombreCliente + '\'' +
-                ", correo='" + correo + '\'' +
-                '}';
+    public List<Producto> getProductosComprados() {
+        return productosComprados;
     }
 
-    public void comprarProducto(Producto producto, int cantidad){
-        System.out.println("Digite el nombre del producto: " + producto);
-        System.out.println("Digite la cantidad a comprar: " + cantidad);
-
-    }
-    public void mostrarCompra(){
+    public void setProductosComprados(List<Producto> productosComprados) {
+        this.productosComprados = productosComprados;
     }
 
-    public void add(String nombreCliente, String correo) {
+    public List<Double> getCostosTotales() {
+        return costosTotales;
     }
 
-    public void add(Cliente cliente) {
+    public void setCostosTotales(List<Double> costosTotales) {
+        this.costosTotales = costosTotales;
+    }
+
+    public void comprarProducto(Producto producto, int cantidad) {
+        if (producto.getCantidadStock() < cantidad) {
+            System.out.println("No hay suficiente stock de: " + producto.getNombre());
+            return;
+        }
+
+        if (producto instanceof Vendible vendible) {
+            double total = vendible.calcularPrecioVenta(cantidad);
+            producto.reducirStock(cantidad);
+            productosComprados.add(producto);
+            costosTotales.add(total);
+            System.out.println(nombre + " compro " + cantidad + " unidad(es) de " + producto.getNombre() + " por $" + total);
+        }
+    }
+
+    public void mostrarCompra() {
+        System.out.println("Resumen de compras de " + nombre);
+        System.out.println("-> Correo de contacto: " + correo);
+        System.out.println("");
+        for (int i = 0; i < productosComprados.size(); i++) {
+            productosComprados.get(i).mostrarDetalles();
+            System.out.println("Costo: $" + costosTotales.get(i));
+            System.out.println("");
+        }
     }
 }
